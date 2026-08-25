@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dharma Quotidien</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f5f5f0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    :root {
+      --bg: #f5f5f0;
+      --card: #ffffff;
+      --text: #2a2a2a;
+      --muted: #666;
+      --accent: #5a7d9a;
+      --border: #e0e0d8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 1.4rem; font-weight: 600; color: var(--accent); }
+    nav button {
+      background: none;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      margin-left: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    nav button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+    .card p { margin-bottom: 10px; }
+    .card ul { margin-left: 20px; margin-bottom: 10px; }
+    .card li { margin-bottom: 6px; }
+    .source {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+    .nav-day {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .nav-day button {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .progress {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .hidden { display: none; }
+    .meditation-steps ol {
+      margin-left: 20px;
+    }
+    .meditation-steps li {
+      margin-bottom: 8px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dharma Quotidien</h1>
+    <nav>
+      <button id="btn-today" class="active">Aujourd'hui</button>
+      <button id="btn-course">Cours</button>
+      <button id="btn-meditations">M méditations</button>
+    </nav>
+  </header>
+
+  <div id="view-today">
+    <div class="progress" id="progress-text">Jour 1 / 60</div>
+    <div class="nav-day">
+      <button id="prev-day">← Jour précédent</button>
+      <button id="next-day">Jour suivant →</button>
+    </div>
+
+    <div class="card">
+      <h2>📘 Enseignement (1.5)</h2>
+      <div id="teaching-content"></div>
+    </div>
+
+    <div class="card">
+      <h2>💭 Pensé··e du jour (1)</h2>
+      <p id="thought-content"></p>
+    </div>
+
+    <div class="card">
+      <h2>🧭 Exercice de vie (2)</h2>
+      <div id="exercise-content"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧘 Méditation (3)</h2>
+      <div id="meditation-content" class="meditation-steps"></div>
+    </div>
+
+    <div class="card">
+      <h2>❓ Question de réflexion (4)</h2>
+      <p id="question-content"></p>
+    </div>
+  </div>
+
+  <div id="view-course" class="hidden">
+    <div class="card">
+      <h2>📚 Programme d'enseignement</h2>
+      <p>60 jours organisės en 8 semaines + introduction et intégration.</p>
+      <ul>
+        <li><strong>Semaine 0 (J1–J4)</strong> : Introduction – Qu'est-ce que le bouddhisme ? Le Bouddha, les 3 joyaux.</li>
+        <li><strong>Semaine 1 (J5–J11)</strong> : Les 4 Nobles Véritės.</li>
+        <li><strong>Semaine 2 (J12–J18)</strong> : Les 3 caractėristiques (anicca, dukkha, anatta).</li>
+        <li><strong>Semaine 3 (J19–J25)</strong> : Éthique bouddhiste – les 5 préceptes, karma.</li>
+        <li><strong>Semaine 4 (J26–J32)</strong> : Les grands courants – Theravāda, Mahāyāna, Vajrayāna.</li>
+        <li><strong>Semaine 5 (J33–J39)</strong> : Méditation formelle – samatha, vipassanā.</li>
+        <li><strong>Semaine 6 (J40–J46)</strong> : Mahāyāna – bodhisattva, vacuité·´, écoles.</li>
+        <li><strong>Semaine 7 (J47–J53)</strong> : Vajrayāna et bouddhisme tibėtain.</li>
+        <li><strong>Semaine 8 (J54–J60)</strong> : Intėgration et approfondissement.</li>
+      </ul>
+      <p class="source">Sources principales : Dhammacakkappavattana Sutta (SN 56.11), Anattalakkhana Sutta (SN 22.59), Canon pali (Tipiṭaka), Bhikkhu Bodhi, Stanford Encyclopedia of Philosophy, introductions académiques au bouddhisme.</p>
+    </div>
+  </div>
+
+  <div id="view-meditations" class="hidden">
+    <div class="card">
+      <h2>🧘 Parcours méditation (8 semaines)</h2>
+      <ul>
+        <li><strong>Semaines 1–2</strong> : Respiration (ānāpānasati) – 5–10 min.</li>
+        <li><strong>Semaines 3–4</strong> : Corps et sensations – scan corporel, pleine conscience du corps.</li>
+        <li><strong>Semaines 5–6</strong> : Émotions et pensées – observation sans identification.</li>
+        <li><strong>Semaines 7–8</strong> : Mettā (bienveillance) – envers soi, proches, neutres, difficiles, tous les êtres.</li>
+      </ul>
+      <p class="source">Basé·´ sur : Ānāpānasati Sutta (MN 118), guides de méditation theravāda (Triratna, Bhikkhu Bodhi), pratiques de mettā-bhāvanā.</p>
+    </div>
+  </div>
+
+  <footer>
+    Dharma Quotidien – Apprentissage progressif du bouddhisme<br>
+    Contenus sourcės – Hors ligne après installation
+  </footer>
+
+  <script>
+    // Contenu des 60 jours (version condensėe pour dėmonstration – à étendre)
+    const days = [
+      {
+        day: 1,
+        teaching: {
+          title: "Qu'est-ce que le bouddhisme ?",
+          text: "Le bouddhisme est une voie spirituelle et philosophique fondėe sur les enseignements de Siddhartha Gautama, le Bouddha (≈ VIe–Ve s. av. n.è·´re). Il propose une analyse de la souffrance (dukkha), de ses causes, de sa cessation et d'un chemin pratique pour y parvenir. Il ne repose pas sur un dieu crėateur, mais sur l'observation directe de l'expėrience et la transformation de l'esprit.",
+          sources: "Bouddhisme — Wikipėdia ; Introduction aux traditions religieuses (GRIAL) ; Bouddhismes.net."
+        },
+        thought: "Commencer par regarder, sans juger, ce qui est déjà là.",
+        exercise: "Pendant 5 minutes aujourd'hui, observe simplement ta respiration. Quand l'esprit part, note-le doucement et reviens au souffle.",
+        meditation: {
+          title: "Respiration – prise de contact",
+          steps: [
+            "Assieds-toi confortablement, dos droit mais non rigide.",
+            "Ferme les yeux ou garde un regard doux vers le sol.",
+            "Pendant 3 minutes, sens simplement l'air entrer et sortir par le nez.",
+            "Quand l'esprit s'ėgare, reviens simplement au souffle, sans te critiquer."
+          ]
+        },
+        question: "O`u est-ce que je cherche du contrōle dans ma vie, alors que tout change ?"
+      },
+      {
+        day: 2,
+        teaching: {
+          title: "Le Bouddha historique",
+          text: "Siddhartha Gautama, prince du clan des Śākya (nord de l'Inde actuelle), quitte sa vie confortable pour chercher une réponse à la souffrance. Après des années de pratiques ascėtiques, il découvre la « Voie du milieu 」 et atteint l'é·´veil sous l'arbre de la Bodhi. Son premier enseignement est le Dhammacakkappavattana Sutta (mise en mouvement de la roue du Dharma).",
+          sources: "Dhammacakkappavattana Sutta (SN 56.11) ; Wikipėdia – Bouddhisme ; Bouddhismes.net."
+        },
+        thought: "L'ėveil n'est pas un état lointain, mais une faĉon de voir ce qui est.",
+        exercise: "Identifie un moment aujourd'hui o`u tu as rėagi par habitude. Note-le simplement.",
+        meditation: {
+          title: "Respiration – compter les souffles",
+          steps: [
+            "Assieds-toi, dos droit, yeux fermės.",
+            "Inspire, expire, compte 1 ; inspire, expire, compte 2… jusqu'à·´ 10.",
+            "Puis recommence à 1. Fais cela pendant 5 minutes.",
+            "Si tu perds le compte, reprends simplement à 1, sans jugement."
+          ]
+        },
+        question: "Quelle habitude mentale reviens-je le plus souvent observer chez moi ?"
+      },
+      {
+        day: 3,
+        teaching: {
+          title: "Les 3 joyaux : Bouddha, Dharma, Sangha",
+          text: "Se « refugier 」 dans les 3 joyaux est un geste central : Bouddha (l'ėveillė, le guide), Dharma (l'enseignement, la vėritė), Sangha (la communautė des pratiquants). Ce n'est pas une soumission, mais un appui pour la pratique. Dans le Theravāda, on rėcite : « Je prends refuge dans le Bouddha, je prends refuge dans le Dharma, je prends refuge dans le Sangha. 」",
+          sources: "Bouddhisme — Wikipėdia ; Bouddhismes.net ; Introductions theravāda."
+        },
+        thought: "Un refuge n'est pas une fuite, mais un lieu o`u revenir pour voir clair.",
+        exercise: "É·`cris 3 lignes : qu'est-ce qui pourrait ĕtre un « refuge 」 sain pour toi aujourd'hui ?",
+        meditation: {
+          title: "Respiration – sensation du souffle",
+          steps: [
+            "Assieds-toi confortablement.",
+            "Laisse tomber le comptage. Sens simplement le souffle entrer et sortir.",
+            "Porte attention à un point : narines, l`evres, ou ventre.",
+            "Pendant 5–7 minutes, reste avec cette sensation."
+          ]
+        },
+        question: "Vers quoi je me tourne automatiquement quand je suis stressė(e) ?"
+      },
+      {
+        day: 4,
+        teaching: {
+          title: "Comment utiliser cette appli",
+          text: "Cette appli est conĉue comme un cursus progressif. Chaque jour : lis l'enseignement (1.5), la pensėe (1), fais l'exercice (2), pratique la mėditation (3), puis rėflėchis à la question (4). Tu peux aller à ton rythme, mais l'idėal est une pratique rėguli`ere, mĕme courte. La bienveillance envers toi-mĕme fait partie du chemin.",
+          sources: "Guides de pratique bouddhiste (Triratna, Bhikkhu Bodhi) ; approches modernes de la pleine conscience."
+        },
+        thought: "Mieux vaut 5 minutes sinc`eres qu'une heure forcėe.",
+        exercise: "Fixe un moment prėcis aujourd'hui (ex. : apr`es le petit-dėjeuner) pour ouvrir l'appli et pratiquer.",
+        meditation: {
+          title: "Respiration – installer une routine",
+          steps: [
+            "Choisis un lieu et un moment rėguliers.",
+            "Assieds-toi, ferme les yeux, sens 10 souffles complets.",
+            "Note intėrieurement : « Ceci est mon temps de pratique. 」",
+            "Termine par 3 respirations conscientes."
+          ]
+        },
+        question: "Quel petit rite pourrais-je crėer pour marquer le dėbut de ma pratique ?"
+      }
+      // ... (les jours 5 à 60 seront ajoutės dans la version compl`ete)
+    ];
+
+    // Gestion de l'ėtat
+    let currentDayIndex = 0;
+    const stored = localStorage.getItem('dharmaDayIndex');
+    if (stored !== null) {
+      currentDayIndex = Math.min(Math.max(parseInt(stored, 10), 0), days.length - 1);
+    }
+
+    const btnToday = document.getElementById('btn-today');
+    const btnCourse = document.getElementById('btn-course');
+    const btnMeditations = document.getElementById('btn-meditations');
+    const viewToday = document.getElementById('view-today');
+    const viewCourse = document.getElementById('view-course');
+    const viewMeditations = document.getElementById('view-meditations');
+
+    const prevDayBtn = document.getElementById('prev-day');
+    const nextDayBtn = document.getElementById('next-day');
+    const progressText = document.getElementById('progress-text');
+
+    const teachingContent = document.getElementById('teaching-content');
+    const thoughtContent = document.getElementById('thought-content');
+    const exerciseContent = document.getElementById('exercise-content');
+    const meditationContent = document.getElementById('meditation-content');
+    const questionContent = document.getElementById('question-content');
+
+    function renderDay(index) {
+      const day = days[index];
+      progressText.textContent = `Jour ${day.day} / ${days.length}`;
+      teachingContent.innerHTML = `
+        <h3>${day.teaching.title}</h3>
+        <p>${day.teaching.text}</p>
+        <div class="source">Sources : ${day.teaching.sources}</div>
+      `;
+      thoughtContent.textContent = day.thought;
+      exerciseContent.innerHTML = `<p>${day.exercise}</p>`;
+      meditationContent.innerHTML = `
+        <h3>${day.meditation.title}</h3>
+        <ol class="meditation-steps">
+          ${day.meditation.steps.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+      `;
+      questionContent.textContent = day.question;
+      localStorage.setItem('dharmaDayIndex', index.toString());
+    }
+
+    function switchView(view) {
+      viewToday.classList.add('hidden');
+      viewCourse.classList.add('hidden');
+      viewMeditations.classList.add('hidden');
+      btnToday.classList.remove('active');
+      btnCourse.classList.remove('active');
+      btnMeditations.classList.remove('active');
+
+      if (view === 'today') {
+        viewToday.classList.remove('hidden');
+        btnToday.classList.add('active');
+      } else if (view === 'course') {
+        viewCourse.classList.remove('hidden');
+        btnCourse.classList.add('active');
+      } else if (view === 'meditations') {
+        viewMeditations.classList.remove('hidden');
+        btnMeditations.classList.add('active');
+      }
+    }
+
+    btnToday.addEventListener('click', () => switchView('today'));
+    btnCourse.addEventListener('click', () => switchView('course'));
+    btnMeditations.addEventListener('click', () => switchView('meditations'));
+
+    prevDayBtn.addEventListener('click', () => {
+      if (currentDayIndex > 0) {
+        currentDayIndex--;
+        renderDay(currentDayIndex);
+      }
+    });
+
+    nextDayBtn.addEventListener('click', () => {
+      if (currentDayIndex < days.length - 1) {
+        currentDayIndex++;
+        renderDay(currentDayIndex);
+      }
+    });
+
+    // Initialisation
+    renderDay(currentDayIndex);
+
+    // Service worker registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
